@@ -1,13 +1,16 @@
+import { Socket } from 'dgram';
 import * as fs from 'fs';
 import { Task } from './task';
 
 export class FileHandler {
   private source: string;
   private data: string;
+  private stringTaskArray: string[];
 
   constructor(source: string) {
     this.source = source;
-    this.data = fs.readFileSync(source, 'utf-8');
+    this.data = fs.readFileSync(source, 'utf-8').slice(0, -1);
+    this.stringTaskArray = this.data.split('\n');
   }
 
   getData(): string {
@@ -25,27 +28,21 @@ export class FileHandler {
 
   getTaskArray(): Task[] {
     let taskArray: Task[] = [];
-    let stringArray: string[] = this.data.split('\n');
 
-    for (let taskElement of stringArray) {
+    for (let taskElement of this.stringTaskArray) {
       taskArray.push(this.convertStringToTask(taskElement));
     }
-
-    taskArray.splice(-1, 1);
 
     return taskArray;
   }
 
   getNextPosition(): number {
-    console.log('data now is:\n' + this.data);
     if (this.data === '') {
       return 1;
     } else {
-      let stringTaskArray: string[] = this.data.split('\n');
-      for (let taskElement of stringTaskArray) {
-        let positionNumber = taskElement.slice(0, 1);
-      }
-      return 1 + parseInt(stringTaskArray[stringTaskArray.length - 2]);
+      return (
+        1 + parseInt(this.stringTaskArray[this.stringTaskArray.length - 1])
+      );
     }
   }
 
@@ -53,11 +50,36 @@ export class FileHandler {
     let nextPosition: number = this.getNextPosition();
 
     fs.appendFileSync(this.source, `${nextPosition}\t${description}\tfalse\n`);
-    this.data = fs.readFileSync(this.source, 'utf-8');
+    this.updateData();
   }
 
   removeTask(position: number): void {
-    // removes task at position given and then rearranges position numbers
+    if (position > this.stringTaskArray.length) {
+      throw new Error('Unable to remove: index is out of bound');
+    } else {
+      let indexToRemove: number = position - 1;
+
+      this.stringTaskArray.splice(indexToRemove, 1);
+    }
+    this.rearrangePositions();
+  }
+
+  rearrangePositions(): void {
+    let dataToWrite: string = '';
+    for (let i: number = 0; i < this.stringTaskArray.length; i++) {
+      let splitted: string[] = this.stringTaskArray[i].split('\t');
+      splitted[0] = '' + (i + 1);
+      this.stringTaskArray[i] = splitted.join('\t');
+      dataToWrite += this.stringTaskArray[i] + '\n';
+    }
+    fs.writeFileSync(this.source, dataToWrite);
+
+    this.updateData();
+  }
+
+  updateData() {
+    this.data = fs.readFileSync(this.source, 'utf-8').slice(0, -1);
+    this.stringTaskArray = this.data.split('\n');
   }
 
   checkTask(position: number): void {
@@ -68,3 +90,8 @@ export class FileHandler {
     // unchecks task at position given
   }
 }
+
+const myFileHandler: FileHandler = new FileHandler('src/my-list.txt');
+myFileHandler.addTask('Test this');
+myFileHandler.addTask('Walk the dog');
+myFileHandler.removeTask(4);
