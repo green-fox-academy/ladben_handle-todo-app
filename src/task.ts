@@ -6,7 +6,7 @@ export class Task implements Checkable, Printable {
   private description: string;
   checked: boolean;
 
-  constructor(position: number, description: string, checked: boolean) {
+  constructor(position: number, description: string, checked: boolean = false) {
     this.position = position;
     this.description = description;
     this.checked = checked;
