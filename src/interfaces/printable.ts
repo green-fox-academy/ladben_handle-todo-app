@@ -1,3 +1,3 @@
 export interface Printable {
-  print(mode: string): void;
+  print(mode?: string): void;
 }
