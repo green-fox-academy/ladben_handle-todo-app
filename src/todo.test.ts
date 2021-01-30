@@ -31,7 +31,7 @@ test('get taskArray', (t) => {
   const actual: Task[] = myFileHandler.getTaskArray();
   const expected: Task[] = [
     new Task(1, 'Test this', false),
-    new Task(2, 'Walk the dog', true),
+    new Task(2, 'Walk dog', false),
   ];
 
   t.deepEqual(actual, expected);
