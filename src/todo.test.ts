@@ -30,6 +30,7 @@ test('get taskArray', (t) => {
 
   const actual: Task[] = myFileHandler.getTaskArray();
   const expected: Task[] = [
+    // these should be the current content of my-file.txt. Check before testing!
     new Task(1, 'Test this', false),
     new Task(2, 'Walk dog', false),
   ];
