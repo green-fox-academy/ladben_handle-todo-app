@@ -2,17 +2,65 @@ import { Printable } from './interfaces/printable';
 import { Task } from './task';
 import { FileHandler } from './file-handler';
 
-let myFileHandler: FileHandler = new FileHandler('src/my-list.txt');
-
 export class List implements Printable {
   private content: Task[];
 
   constructor() {
-    this.content = myFileHandler.getTaskArray();
+    this.content = [];
   }
 
-  refresh(): void {
-    this.content = myFileHandler.getTaskArray();
+  setContent(taskList: Task[]): void {
+    this.content = taskList;
+  }
+
+  getContent(): Task[] {
+    return this.content;
+  }
+
+  addTask(taskDescriptionToAdd: string): void {
+    let newPosition: number =
+      1 +
+      Math.max(
+        ...this.content.map((e) => {
+          return e.getPosition();
+        })
+      );
+
+    let taskToAdd: Task = new Task(newPosition, taskDescriptionToAdd, false);
+    this.content.push(taskToAdd);
+  }
+
+  checkTask(positionToCheck: number, check: boolean = true): void {
+    let positions: number[] = this.content.map((e) => {
+      return e.getPosition();
+    });
+    const indexToCheck: number = positions.indexOf(positionToCheck);
+    if (indexToCheck === -1) {
+      throw new Error('Unable to check: index is out of bound');
+    }
+
+    check
+      ? this.content[indexToCheck].check()
+      : this.content[indexToCheck].uncheck();
+  }
+
+  removeTask(positionToRemove: number): void {
+    let positions: number[] = this.content.map((e) => {
+      return e.getPosition();
+    });
+    const indexToRemove: number = positions.indexOf(positionToRemove);
+    if (indexToRemove === -1) {
+      throw new Error('Unable to remove: index is out of bound');
+    }
+
+    this.content.splice(indexToRemove, 1);
+    this.rearrangePositions();
+  }
+
+  private rearrangePositions(): void {
+    for (let i = 0; i < this.content.length; i++) {
+      this.content[i].setPosition(i + 1);
+    }
   }
 
   print(mode?: string): void {
