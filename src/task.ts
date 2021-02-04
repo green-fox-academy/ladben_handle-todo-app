@@ -12,6 +12,18 @@ export class Task implements Checkable, Printable {
     this.checked = checked;
   }
 
+  getPosition(): number {
+    return this.position;
+  }
+
+  getDescription(): string {
+    return this.description;
+  }
+
+  setPosition(value: number): void {
+    this.position = value;
+  }
+
   print(mode?: string): void {
     if (!mode) {
       console.log(`${this.position} - ${this.description}`);
