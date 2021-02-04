@@ -1,3 +1,2 @@
 node_modules/
-src/temp.txt
-src/my-list.txt
+*.txt
