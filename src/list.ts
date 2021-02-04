@@ -18,13 +18,22 @@ export class List implements Printable {
   }
 
   addTask(taskDescriptionToAdd: string): void {
-    let newPosition: number =
-      1 +
-      Math.max(
-        ...this.content.map((e) => {
-          return e.getPosition();
-        })
-      );
+    if (taskDescriptionToAdd === '') {
+      throw new Error('no task provided');
+    }
+
+    let newPosition: number;
+    if (this.content.length === 0) {
+      newPosition = 1;
+    } else {
+      newPosition =
+        1 +
+        Math.max(
+          ...this.content.map((e) => {
+            return e.getPosition();
+          })
+        );
+    }
 
     let taskToAdd: Task = new Task(newPosition, taskDescriptionToAdd, false);
     this.content.push(taskToAdd);
@@ -39,9 +48,7 @@ export class List implements Printable {
       throw new Error('Unable to check: index is out of bound');
     }
 
-    check
-      ? this.content[indexToCheck].check()
-      : this.content[indexToCheck].uncheck();
+    check ? this.content[indexToCheck].check() : this.content[indexToCheck].uncheck();
   }
 
   removeTask(positionToRemove: number): void {
