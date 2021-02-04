@@ -27,7 +27,7 @@ export class FileHandler {
     }`;
   }
 
-  private updateData(): void {
+  updateData(): void {
     this.data = fs.readFileSync(this.source, 'utf-8');
     this.linesOfData = this.data.split('\n');
   }
@@ -36,8 +36,10 @@ export class FileHandler {
     this.updateData();
     let taskArray: Task[] = [];
 
-    for (let taskElement of this.linesOfData) {
-      taskArray.push(this.convertStringToTask(taskElement));
+    if (this.data != '') {
+      for (let taskElement of this.linesOfData) {
+        taskArray.push(this.convertStringToTask(taskElement));
+      }
     }
 
     return taskArray;
