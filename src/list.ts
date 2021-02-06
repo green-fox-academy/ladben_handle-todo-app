@@ -45,7 +45,7 @@ export class List implements Printable {
     });
     const indexToCheck: number = positions.indexOf(positionToCheck);
     if (indexToCheck === -1) {
-      throw new Error('Unable to check: index is out of bound');
+      throw new Error('index is out of bound');
     }
 
     check ? this.content[indexToCheck].check() : this.content[indexToCheck].uncheck();
