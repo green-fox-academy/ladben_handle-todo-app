@@ -45,11 +45,28 @@ try {
     } catch (error) {
       throw new Error('Unable to add: ' + error.message);
     }
+  }
 
-    // const blackFriday = friday.getDateOfBlackFridayByYear(
-    //   year ? validator.isValidInteger(year) : new Date().getFullYear()
-    // );
-    // console.log(blackFriday.toLocaleDateString('hu-HU'));
+  if (remove) {
+    try {
+      let indexToRemove: number = validator.isValidInteger(remove);
+      readListTXT(fileHandler, taskList);
+      taskList.removeTask(indexToRemove);
+      writeListTXT(fileHandler, taskList);
+    } catch (error) {
+      throw new Error('Unable to remove: ' + error.message);
+    }
+  }
+
+  if (complete) {
+    try {
+      let indexToCheck: number = validator.isValidInteger(complete);
+      readListTXT(fileHandler, taskList);
+      taskList.checkTask(indexToCheck);
+      writeListTXT(fileHandler, taskList);
+    } catch (error) {
+      throw new Error('Unable to check: ' + error.message);
+    }
   }
 } catch (error) {
   console.log(chalk.red(error.message));
