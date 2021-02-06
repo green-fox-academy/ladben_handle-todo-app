@@ -17,10 +17,12 @@ program
   .version('0.0.1')
   .description('Todo app')
   .option('-l, --list', 'Lists all the tasks')
-  .option('-a, --add <string>', 'Adds a new task')
-  .option('-r, --remove <number>', 'Removes a task')
-  .option('-c, --complete <number>', 'Completes a task')
+  .option('-a, --add [string]', 'Adds a new task')
+  .option('-r, --remove [number]', 'Removes a task')
+  .option('-c, --complete [number]', 'Completes a task')
   .parse(process.argv);
+
+console.log(program.opts());
 
 try {
   const { list, add, remove, complete } = program.opts();
@@ -39,8 +41,9 @@ try {
 
   if (add) {
     try {
+      let taskToAdd: string = validator.isUndefined(add);
       readListTXT(fileHandler, taskList);
-      taskList.addTask(add);
+      taskList.addTask(taskToAdd);
       writeListTXT(fileHandler, taskList);
     } catch (error) {
       throw new Error('Unable to add: ' + error.message);
@@ -49,7 +52,8 @@ try {
 
   if (remove) {
     try {
-      let indexToRemove: number = validator.isValidInteger(remove);
+      let indexToRemove: number = validator.isUndefined(remove);
+      indexToRemove = validator.isValidInteger(remove);
       readListTXT(fileHandler, taskList);
       taskList.removeTask(indexToRemove);
       writeListTXT(fileHandler, taskList);
@@ -60,7 +64,8 @@ try {
 
   if (complete) {
     try {
-      let indexToCheck: number = validator.isValidInteger(complete);
+      let indexToCheck: number = validator.isUndefined(complete);
+      indexToCheck = validator.isValidInteger(complete);
       readListTXT(fileHandler, taskList);
       taskList.checkTask(indexToCheck);
       writeListTXT(fileHandler, taskList);
@@ -73,7 +78,16 @@ try {
 }
 
 if (!process.argv.slice(2).length) {
-  console.log(program.help());
+  console.log(
+    `Command Line Todo application
+=============================
+  
+Command line arguments:
+    -l   Lists all the tasks
+    -a   Adds a new task
+    -r   Removes an task
+    -c   Completes an task`
+  );
 }
 
 function readListTXT(fileHandler: FileHandler, taskList: List): void {
