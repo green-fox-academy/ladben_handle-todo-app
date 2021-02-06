@@ -57,7 +57,7 @@ export class List implements Printable {
     });
     const indexToRemove: number = positions.indexOf(positionToRemove);
     if (indexToRemove === -1) {
-      throw new Error('Unable to remove: index is out of bound');
+      throw new Error('index is out of bound');
     }
 
     this.content.splice(indexToRemove, 1);
